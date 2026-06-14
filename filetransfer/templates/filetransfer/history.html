@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer History | Post-Quantum File Transfer{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Transfer History</h1>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr><th>File</th><th>Receiver</th><th>Status</th><th>SHA-256</th><th>Created</th></tr>
+                </thead>
+                <tbody>
+                {% for transfer in transfers %}
+                    <tr>
+                        <td>{{ transfer.original_filename }}</td>
+                        <td>{{ transfer.receiver.username }}</td>
+                        <td><span class="badge bg-secondary">{{ transfer.status }}</span></td>
+                        <td><code>{{ transfer.file_hash|slice:":16" }}...</code></td>
+                        <td>{{ transfer.created_at }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-muted">No files sent yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

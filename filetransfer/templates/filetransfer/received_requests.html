@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Received Requests | Post-Quantum File Transfer{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-3">Received Requests</h1>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr><th>File</th><th>Sender</th><th>Status</th><th>Expires</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                {% for transfer in transfers %}
+                    <tr>
+                        <td>{{ transfer.original_filename }}</td>
+                        <td>{{ transfer.sender.username }}</td>
+                        <td><span class="badge bg-secondary">{{ transfer.status }}</span></td>
+                        <td>{{ transfer.expires_at }}</td>
+                        <td class="d-flex gap-2">
+                            {% if transfer.status == "PENDING" %}
+                                <form method="post" action="{% url 'filetransfer:accept' transfer.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-success" type="submit">Accept</button>
+                                </form>
+                                <form method="post" action="{% url 'filetransfer:reject' transfer.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Reject</button>
+                                </form>
+                            {% elif transfer.status == "ACCEPTED" or transfer.status == "DOWNLOADED" %}
+                                <form method="post" action="{% url 'filetransfer:download' transfer.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn btn-sm btn-primary" type="submit">Download</button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted small">No action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-muted">No received transfer requests.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

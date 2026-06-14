@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^xhqc8woy@hj5q9k0yh!!2z6)x*2tk917z$zgkvwcq5$59c$q#'
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-^xhqc8woy@hj5q9k0yh!!2z6)x*2tk917z$zgkvwcq5$59c$q#',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 AUTH_USER_MODEL = 'accounts.User'
 # Application definition
 
@@ -58,7 +62,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,11 +83,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'pq_file_transfer',
-        'USER': 'pq_user',
-        'PASSWORD': 'vamsi',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('MYSQL_DATABASE', 'pq_file_transfer'),
+        'USER': os.getenv('MYSQL_USER', 'pq_user'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'vamsi'),
+        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
     }
 }
 
@@ -126,3 +130,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'dashboard:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
