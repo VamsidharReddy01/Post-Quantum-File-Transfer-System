@@ -22,7 +22,10 @@ class RegisterView(CreateView):
     def form_valid(self, form):
         user = register_user(form.cleaned_data, self.request)
         log_action(user, "Registration", self.request)
-        messages.success(self.request, "Registration successful. You can now log in.")
+        messages.success(
+            self.request,
+            f"Registration successful. Your user ID is {user.user_id}. You can now log in.",
+        )
         self.object = user
         return redirect(self.get_success_url())
 

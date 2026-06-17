@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Post-Quantum Secure File Transfer{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <p class="text-uppercase text-primary fw-semibold small mb-2">Capstone Security Project</p>
+            <h1 class="display-5 fw-bold mb-3">Post-Quantum Secure File Transfer System</h1>
+            <p class="lead text-muted">
+                Send files through an authenticated Django workflow where uploads are encrypted before storage,
+                signed for integrity, and decrypted only for the intended receiver.
+            </p>
+            <div class="d-flex flex-wrap gap-2 mt-4">
+                {% if user.is_authenticated %}
+                    <a class="btn btn-primary" href="{% url 'dashboard:home' %}">Open Dashboard</a>
+                    <a class="btn btn-outline-secondary" href="{% url 'filetransfer:send' %}">Send File</a>
+                {% else %}
+                    <a class="btn btn-primary" href="{% url 'accounts:register' %}">Create Account</a>
+                    <a class="btn btn-outline-secondary" href="{% url 'accounts:login' %}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3">How It Works</h2>
+                    <div class="d-grid gap-3">
+                        <div>
+                            <div class="fw-semibold">1. Encrypt before storage</div>
+                            <div class="text-muted small">AES-256-GCM protects uploaded file bytes immediately.</div>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">2. Receiver code lookup</div>
+                            <div class="text-muted small">Send files by entering the receiver's 5-digit user ID.</div>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">3. Verify and download</div>
+                            <div class="text-muted small">The receiver accepts, verifies, decrypts, and downloads the original file.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -9,13 +9,14 @@
 <body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand fw-semibold" href="{% url 'dashboard:home' %}">PQ File Transfer</a>
+        <a class="navbar-brand fw-semibold" href="{% url 'dashboard:landing' %}">PQ File Transfer</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:home' %}">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'filetransfer:send' %}">Send File</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'filetransfer:received' %}">Received</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'filetransfer:history' %}">History</a></li>

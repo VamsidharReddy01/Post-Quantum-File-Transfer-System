@@ -14,6 +14,11 @@
                         <div class="mb-3">
                             <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {{ field }}
+                            {% if field.name == "receiver_user_id" %}
+                                <div id="receiverLookupResult" class="form-text">Type the receiver's 5-digit user ID.</div>
+                            {% elif field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
                             {% for error in field.errors %}
                                 <div class="text-danger small">{{ error }}</div>
                             {% endfor %}
@@ -28,4 +33,48 @@
         </div>
     </div>
 </div>
+<script>
+    const receiverInput = document.getElementById("id_receiver_user_id");
+    const receiverResult = document.getElementById("receiverLookupResult");
+
+    if (receiverInput && receiverResult) {
+        let lookupTimer = null;
+
+        receiverInput.addEventListener("input", () => {
+            clearTimeout(lookupTimer);
+            const value = receiverInput.value.trim();
+            receiverResult.className = "form-text";
+
+            if (value.length === 0) {
+                receiverResult.textContent = "Type the receiver's 5-digit user ID.";
+                return;
+            }
+
+            if (!/^\d{0,5}$/.test(value)) {
+                receiverResult.className = "form-text text-danger";
+                receiverResult.textContent = "Only digits are allowed.";
+                return;
+            }
+
+            if (value.length < 5) {
+                receiverResult.textContent = "Keep typing the 5-digit user ID.";
+                return;
+            }
+
+            lookupTimer = setTimeout(async () => {
+                const response = await fetch(`{% url 'filetransfer:receiver_lookup' %}?user_id=${value}`);
+                const data = await response.json();
+                if (data.found) {
+                    receiverResult.className = "form-text text-success fw-semibold";
+                    receiverResult.textContent = data.full_name
+                        ? `User found: ${data.username} (${data.full_name})`
+                        : `User found: ${data.username}`;
+                } else {
+                    receiverResult.className = "form-text text-danger fw-semibold";
+                    receiverResult.textContent = data.message || "User not found.";
+                }
+            }, 250);
+        });
+    }
+</script>
 {% endblock %}

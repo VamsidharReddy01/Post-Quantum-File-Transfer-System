@@ -669,14 +669,16 @@ The app includes these checks:
 ## 18. Important URLs
 
 ```text
-/                         Dashboard
-/accounts/register/       Register
-/accounts/login/          Login
-/accounts/logout/         Logout
-/transfers/send/          Send encrypted file
-/transfers/received/      Received requests
-/transfers/history/       Sent transfer history
-/admin/                   Django admin
+/                              Public landing page
+/dashboard/                    Authenticated user dashboard
+/accounts/register/            Register
+/accounts/login/               Login
+/accounts/logout/              Logout
+/transfers/send/               Send encrypted file
+/transfers/receiver-lookup/    Receiver user ID lookup JSON endpoint
+/transfers/received/           Received requests
+/transfers/history/            Sent transfer history
+/admin/                        Django admin
 ```
 
 ## 19. Current Limitations

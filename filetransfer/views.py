@@ -1,6 +1,8 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied, ValidationError
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -29,7 +31,7 @@ class SendFileView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         create_transfer(
             sender=self.request.user,
-            receiver=form.cleaned_data["receiver"],
+            receiver=form.receiver,
             uploaded_file=form.cleaned_data["file"],
             download_limit=form.cleaned_data["download_limit"],
             expires_at=form.cleaned_data["expires_at"],
@@ -37,6 +39,27 @@ class SendFileView(LoginRequiredMixin, FormView):
         )
         messages.success(self.request, "Encrypted transfer request created.")
         return super().form_valid(form)
+
+
+class ReceiverLookupView(LoginRequiredMixin, View):
+    def get(self, request):
+        receiver_user_id = request.GET.get("user_id", "").strip()
+        if not receiver_user_id.isdigit() or len(receiver_user_id) != 5:
+            return JsonResponse({"found": False, "message": "Enter a 5-digit user ID."})
+        try:
+            receiver = get_user_model().objects.get(user_id=receiver_user_id)
+        except get_user_model().DoesNotExist:
+            return JsonResponse({"found": False, "message": "User not found."})
+        if receiver == request.user:
+            return JsonResponse({"found": False, "message": "You cannot send a file to yourself."})
+        return JsonResponse(
+            {
+                "found": True,
+                "username": receiver.username,
+                "full_name": receiver.get_full_name(),
+                "message": f"User found: {receiver.username}",
+            }
+        )
 
 
 class ReceivedRequestsView(LoginRequiredMixin, ListView):

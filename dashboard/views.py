@@ -4,6 +4,10 @@ from django.views.generic import TemplateView
 from filetransfer.models import FileTransfer, TransferStatus
 
 
+class LandingPageView(TemplateView):
+    template_name = "dashboard/landing.html"
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "dashboard/home.html"
 

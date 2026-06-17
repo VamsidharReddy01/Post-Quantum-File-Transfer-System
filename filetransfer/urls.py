@@ -4,6 +4,7 @@ from .views import (
     AcceptTransferView,
     DownloadTransferView,
     ReceivedRequestsView,
+    ReceiverLookupView,
     RejectTransferView,
     SendFileView,
     TransferHistoryView,
@@ -13,6 +14,7 @@ app_name = "filetransfer"
 
 urlpatterns = [
     path("send/", SendFileView.as_view(), name="send"),
+    path("receiver-lookup/", ReceiverLookupView.as_view(), name="receiver_lookup"),
     path("received/", ReceivedRequestsView.as_view(), name="received"),
     path("history/", TransferHistoryView.as_view(), name="history"),
     path("<int:pk>/accept/", AcceptTransferView.as_view(), name="accept"),
